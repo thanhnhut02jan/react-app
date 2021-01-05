@@ -1,5 +1,7 @@
 import React from 'react';
 
+import TimeTableDayCard from './TimeTableDayCard';
+
 const startDate = new Date('12/28/2020');
 const endDate = new Date('08/08/2021');
 
@@ -9,23 +11,13 @@ const wraperStyle = {
     justifyContent: "space-between"
 }
 
-const rowStyle = {
-    flexGrow: 1,
-    flexShrink: 1,
-    textAlign: 'center',
-    border: "1px #555 solid",
-    borderRadius: "5px",
-    padding: "10px 10px",
-    margin: "0 5px",
-    flexBasis: "0px"
-}
-
 class TimeTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
            date: new Date(),
            weekTimeTable: [],
+           haveData: false
         }
     }
 
@@ -40,13 +32,12 @@ class TimeTable extends React.Component {
         }
     }
 
-    getWeekTimeTable = () => {
+    getWeekTimeTable = (nowDate) => {
         let res = [];
         while (res.length < 7) res.push([]);
 
         let { subjectList } = this.props;
-        let weekNum = Math.floor((this.state.date - startDate) / (1000*60*60*24*7));
-
+        let weekNum = Math.floor((nowDate - startDate) / (1000*60*60*24*7));
         subjectList.forEach(subject => {
             subject.scheduleList.forEach(schedule => {
                 if (schedule.studyWeek.charAt(weekNum) !== '-') {
@@ -66,53 +57,51 @@ class TimeTable extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({ weekTimeTable: this.getWeekTimeTable()});
+        this.setState({ weekTimeTable: this.getWeekTimeTable(), haveData: true});
     }
 
     increaseDay = () => {
         let newDate = this.state.date;
         newDate.setDate(newDate.getDate() + 7);
-        this.setState({
-            date: newDate,
-            weekTimeTable: this.getWeekTimeTable(),
-        });
+        
+        if ((endDate - newDate) >= 0) {
+            this.setState({
+                date: newDate,
+                weekTimeTable: this.getWeekTimeTable(newDate),
+            });
+        }
+    }
+
+    decreaseDay = () => {
+        let newDate = new Date(this.state.date.getTime());
+        newDate.setDate(newDate.getDate() - 7);
+
+        if ((newDate - startDate) >= 0) {
+            this.setState({
+                date: newDate,
+                weekTimeTable: this.getWeekTimeTable(newDate),
+            });
+        }
     }
 
     render() {
+        let { weekTimeTable, date } = this.state;
         return (
             <div>
-                <span>{this.state.date.toLocaleDateString()}</span>
+                <button onClick={this.decreaseDay}>-</button>
+                <span>{date.toLocaleDateString()}</span>
                 <button onClick={this.increaseDay}>+</button>
-                <div style={wraperStyle}>
-                <div style={rowStyle}>
-                    <span>Monday</span>
-                    {this.getDayTimeTable(0)}
-                </div>
-                <div style={rowStyle}>
-                    <span>Tueday</span>
-                    {this.getDayTimeTable(1)}
-                </div>
-                <div style={rowStyle}>
-                    <span>Wednesday</span>
-                    {this.getDayTimeTable(2)}
-                </div>
-                <div style={rowStyle}>
-                    <span>Thursday</span>
-                    {this.getDayTimeTable(3)}
-                </div>
-                <div style={rowStyle}>
-                    <span>Friday</span>
-                    {this.getDayTimeTable(4)}
-                </div>
-                <div style={rowStyle}>
-                    <span>Saturday</span>
-                    {this.getDayTimeTable(5)}
-                </div>
-                <div style={rowStyle}>
-                    <span>Sunday</span>
-                    {this.getDayTimeTable(6)}
-                </div>
-                </div>
+                {this.state.haveData && 
+                    <div style={wraperStyle}>
+                        <TimeTableDayCard dayName='Monday' daySubjects={weekTimeTable[0]} />
+                        <TimeTableDayCard dayName='Tuesday' daySubjects={weekTimeTable[1]}/>
+                        <TimeTableDayCard dayName='Wednesday' daySubjects={weekTimeTable[2]}/>
+                        <TimeTableDayCard dayName='Thursday' daySubjects={weekTimeTable[3]}/>
+                        <TimeTableDayCard dayName='Friday' daySubjects={weekTimeTable[4]}/>
+                        <TimeTableDayCard dayName='Saturday' daySubjects={weekTimeTable[5]}/>
+                        <TimeTableDayCard dayName='Sunday' daySubjects={weekTimeTable[6]}/>
+                    </div>
+                }
             </div> 
         );
     }
