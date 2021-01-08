@@ -1,28 +1,42 @@
 import TimeTableSubject from './TimeTableSubject'
 
-const dayCardStyle = {
-    flexGrow: 1,
-    flexShrink: 1,
-    textAlign: 'center',
-    border: "1px #555 solid",
-    margin: "0 5px",
-    flexBasis: "0px",
-    minHeight: "300px",
-    color: '#333'
-}
-
 const headerDayNameStyle = {
     margin: 0,
     padding: "20px 40px",
-    backgroundColor: "pink"
+    backgroundColor: "#74c7b8"
 }
 
+// const dayCardStyle = {
+//     flexGrow: 1,
+//     flexShrink: 1,
+//     textAlign: 'center',
+//     margin: "0 5px",
+//     flexBasis: "0px",
+//     color: '#333',
+//     border: "1px #555 solid",
+//     borderBottom: 0
+// }
+
+// const toDayCardStyle = {
+//     flexGrow: 1,
+//     flexShrink: 1,
+//     textAlign: 'center',
+//     margin: "0 5px",
+//     flexBasis: "0px",
+//     color: '#333',
+//     border: "10px #555 solid",
+//     borderBottom: 0
+// }
+
 function TimeTableDayCard (props) {
-    let { dayName, daySubjects } = props;
+    let { dayName, daySubjects, isToday } = props;
+
     let res = 
-        <div style={dayCardStyle}>
-            <h3 style={headerDayNameStyle}>{dayName}</h3>
-            {daySubjects.length > 0 && daySubjects.map(item => <TimeTableSubject data={item}/>)}
+        <div className={isToday === true ? "dayCardToday" : "dayCard"}>
+            <div>
+                <h3 style={headerDayNameStyle}>{dayName}</h3>
+                {daySubjects.length > 0 && daySubjects.map(item => <TimeTableSubject data={item}/>)}
+            </div>
         </div>
     ;
     return res;

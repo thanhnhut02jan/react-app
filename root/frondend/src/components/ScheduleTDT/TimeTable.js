@@ -8,7 +8,9 @@ const endDate = new Date('08/08/2021');
 const wraperStyle = {
     backgroundColor: "while",
     display: "flex",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    margin: "5px",
+    overflow: "auto"
 }
 
 class TimeTable extends React.Component {
@@ -19,6 +21,12 @@ class TimeTable extends React.Component {
            weekTimeTable: [],
            haveData: false
         }
+    }
+
+    componentDidMount() {
+        this.setState({ weekTimeTable: this.getWeekTimeTable(this.state.date)}, () => {
+            this.setState({haveData: true});
+        });
     }
 
     getDayTimeTable = (index) => {
@@ -56,13 +64,9 @@ class TimeTable extends React.Component {
         return res;
     }
 
-    componentDidMount() {
-        this.setState({ weekTimeTable: this.getWeekTimeTable(), haveData: true});
-    }
-
     increaseDay = () => {
         let newDate = this.state.date;
-        newDate.setDate(newDate.getDate() + 7);
+        newDate.setDate(newDate.getDate() + 1);
         
         if ((endDate - newDate) >= 0) {
             this.setState({
@@ -74,7 +78,7 @@ class TimeTable extends React.Component {
 
     decreaseDay = () => {
         let newDate = new Date(this.state.date.getTime());
-        newDate.setDate(newDate.getDate() - 7);
+        newDate.setDate(newDate.getDate() - 1);
 
         if ((newDate - startDate) >= 0) {
             this.setState({
@@ -93,13 +97,13 @@ class TimeTable extends React.Component {
                 <button onClick={this.increaseDay}>+</button>
                 {this.state.haveData && 
                     <div style={wraperStyle}>
-                        <TimeTableDayCard dayName='Monday' daySubjects={weekTimeTable[0]} />
-                        <TimeTableDayCard dayName='Tuesday' daySubjects={weekTimeTable[1]}/>
-                        <TimeTableDayCard dayName='Wednesday' daySubjects={weekTimeTable[2]}/>
-                        <TimeTableDayCard dayName='Thursday' daySubjects={weekTimeTable[3]}/>
-                        <TimeTableDayCard dayName='Friday' daySubjects={weekTimeTable[4]}/>
-                        <TimeTableDayCard dayName='Saturday' daySubjects={weekTimeTable[5]}/>
-                        <TimeTableDayCard dayName='Sunday' daySubjects={weekTimeTable[6]}/>
+                        <TimeTableDayCard dayName='Monday' daySubjects={weekTimeTable[0]} isToday={date.getDay() === 1}/>
+                        <TimeTableDayCard dayName='Tuesday' daySubjects={weekTimeTable[1]} isToday={date.getDay() === 2}/>
+                        <TimeTableDayCard dayName='Wednesday' daySubjects={weekTimeTable[2]} isToday={date.getDay() === 3}/>
+                        <TimeTableDayCard dayName='Thursday' daySubjects={weekTimeTable[3]} isToday={date.getDay() === 4}/>
+                        <TimeTableDayCard dayName='Friday' daySubjects={weekTimeTable[4]} isToday={date.getDay() === 5}/>
+                        <TimeTableDayCard dayName='Saturday' daySubjects={weekTimeTable[5]} isToday={date.getDay() === 6}/>
+                        <TimeTableDayCard dayName='Sunday' daySubjects={weekTimeTable[6]} isToday={date.getDay() === 0}/>
                     </div>
                 }
             </div> 

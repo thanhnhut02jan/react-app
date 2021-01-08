@@ -1,7 +1,8 @@
 const wraperStyle = {
-    marginTop: "10px",
-    padding: "0px 5px",
-    borderBottom: "1px solid #333"
+    padding: "10px 5px 10px 5px",
+    margin: "10px 5px",
+    backgroundColor: "#ee9595",
+    borderRadius: "10px"
 }
 
 const headerElementStyle = {
